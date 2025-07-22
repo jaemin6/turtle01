@@ -4,12 +4,13 @@ import tkinter as tk
 from tkinter import messagebox
 
 def calculate_distance(x1, y1, x2, y2):
-    """
-    두 점 사이의 거리를 계산합니다.
-    """
+    # 출발지와 목적지 사이 거리 계산
     distance = math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
     return distance
 
+def avoid_obstacle(x, y):
+    # 장애물 (-50, 0) 에서 60x60 사각형 확인
+    return -50 <= x <= 10 and 0 <= y <= 60
 # 좌표값만 바꿔서 사용
 x1 = -300
 y1 = -300

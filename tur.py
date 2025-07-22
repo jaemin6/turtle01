@@ -3,70 +3,79 @@ import math
 import tkinter as tk
 from tkinter import messagebox
 
+# 거리 계산
 def calculate_distance(x1, y1, x2, y2):
-    # 출발지와 목적지 사이 거리 계산
-    distance = math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
-    return distance
+    return math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
 
-def avoid_obstacle(x, y):
-    # 장애물 (-50, 0) 에서 60x60 사각형 확인
-    return -50 <= x <= 10 and 0 <= y <= 60
-# 좌표값만 바꿔서 사용
-x1 = -300
-y1 = -300
-x2 = 300
-y2 = 300
+# 장애물 충돌 감지 - 범위 설정
+def is_collision(x, y):
+    padding = 15  # 여유 범위
+    return (-50 - padding) <= x <= (10 + padding) and (0 - padding) <= y <= (60 + padding)
 
-distance = calculate_distance(x1, y1, x2, y2)
+# 출발, 도착 좌표
+start_x, start_y = -300, -300
+goal_x, goal_y = 300, 300
 
-# 스크린 생성
-s = turtle.getscreen()
-# 거북이 변수 지정
+# 터틀 설정
+screen = turtle.Screen()
 t = turtle.Turtle()
 t.shape("turtle")
 t.color("sky blue")
+t.speed(1)
 
+# 장애물 그리기
+def draw_obstacle():
+    t.penup()
+    t.goto(-50, 0)
+    t.pendown()
+    t.fillcolor("red")
+    t.begin_fill()
+    for _ in range(4):
+        t.forward(60)
+        t.left(90)
+    t.end_fill()
+    t.penup()
+
+draw_obstacle()
+
+# 출발점 이동
 t.penup()
-t.goto(-50, 0)  # 장애물 시작 위치 (화면 가운데)
+t.goto(start_x, start_y)
+t.setheading(t.towards(goal_x, goal_y))
 t.pendown()
-t.fillcolor("red")
-t.begin_fill()
-for _ in range(4):
-    t.forward(60)  
-    t.left(90)  # 사각형은 90
-t.end_fill()
+
+# 이동
+while True:
+    x, y = t.xcor(), t.ycor()
+
+    # 도착 체크
+    if calculate_distance(x, y, goal_x, goal_y) < 20:
+        break
+
+    # 다음 위치 예측
+    next_x = x + 10 * math.cos(math.radians(t.heading()))
+    next_y = y + 10 * math.sin(math.radians(t.heading()))
+
+    if is_collision(next_x, next_y):
+        # 장애물 근처이면 오른쪽으로 우회
+        t.left(90)
+        t.forward(70)
+        t.right(90)
+        t.setheading(t.towards(goal_x, goal_y))
+    else:
+        t.forward(10)
 
 # 목적지점 만들기
 t.penup()
-t.goto(280, 280)  # 목적지점 좌표 거북이가 들어갈 수 있게
-t.setheading(0)   # 방향 초기화 (오른쪽)
+t.goto(goal_x, goal_y)
+t.dot(20, "blue")
 
-t.forward(10)    
-t.right(90)
-t.forward(10)
-t.left(90)
+# 거리 출력
+total_distance = calculate_distance(start_x, start_y, goal_x, goal_y)
+print(f"총 거리: {total_distance:.2f}")
 
-t.pendown()
-t.fillcolor("black")
-t.begin_fill()
-for _ in range(4):
-    t.forward(60)
-    t.left(90)
-t.end_fill()
-
-# 왼쪽 아래 (-300, -300)로 이동 (출발점)
-t.penup()
-t.goto(-300, -300)
-t.pendown()
-
-# 오른쪽 위(300, 300)로 이동 (목적지)
-t.goto(-60, 10)  # 장애물 도착 전 좌표
-# 장애물 회피
-t.goto(-100, 80)
-# 회피 후 목적지 도착
-t.goto(300, 300)
-
-print(f"두 점 ({x1}, {y1}) 와 ({x2}, {y2}) 사이의 거리는 {distance:.2f} 입니다.")
-
-messagebox.showinfo("도착!", "도착!")
+# 팝업 메시지
+root = tk.Tk()
+root.withdraw()
+messagebox.showinfo("도착!", "도착했습니다!")
 

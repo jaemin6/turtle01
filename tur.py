@@ -1,4 +1,20 @@
 import turtle
+import math
+
+def calculate_distance(x1, y1, x2, y2):
+    """
+    두 점 사이의 거리를 계산합니다.
+    """
+    distance = math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
+    return distance
+
+# 좌표값만 바꿔서 사용
+x1 = -300
+y1 = -300
+x2 = 300
+y2 = 300
+
+distance = calculate_distance(x1, y1, x2, y2)
 
 # 스크린 생성
 s = turtle.getscreen()
@@ -46,3 +62,5 @@ t.goto(-60, 10)  # 장애물 도착 전 좌표
 t.goto(-100, 80)
 # 회피 후 목적지 도착
 t.goto(300, 300)
+
+print(f"두 점 ({x1}, {y1}) 와 ({x2}, {y2}) 사이의 거리는 {distance:.2f} 입니다.")

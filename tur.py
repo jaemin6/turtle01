@@ -3,24 +3,25 @@ import math
 import tkinter as tk
 from tkinter import messagebox
 
-# 거리 계산 함수
+# 거리 계산
 def calculate_distance(x1, y1, x2, y2):
-    return math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+    return math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
 
-# 장애물 충돌 감지 (더 넓은 범위로 체크)
+# 장애물 충돌 감지 - 범위 설정
 def is_collision(x, y):
-    padding = 30  # 안전 여유 거리
+    padding = 15  # 여유 범위
     return (-50 - padding) <= x <= (10 + padding) and (0 - padding) <= y <= (60 + padding)
 
-# 출발지와 목적지점 설정
+# 출발, 도착 좌표
 start_x, start_y = -300, -300
 goal_x, goal_y = 300, 300
 
-# 거북이 설정
+# 터틀 설정
 screen = turtle.Screen()
 t = turtle.Turtle()
 t.shape("turtle")
 t.color("sky blue")
+t.speed(1)
 
 # 장애물 그리기
 def draw_obstacle():
@@ -37,43 +38,44 @@ def draw_obstacle():
 
 draw_obstacle()
 
-# 출발 위치로 이동
+# 출발점 이동
 t.penup()
 t.goto(start_x, start_y)
 t.setheading(t.towards(goal_x, goal_y))
 t.pendown()
 
-# 장애물 회피 후 목적지까지 이동
+# 이동
 while True:
     x, y = t.xcor(), t.ycor()
 
-    # 도착 조건
+    # 도착 체크
     if calculate_distance(x, y, goal_x, goal_y) < 20:
         break
 
-    # 다음 위치 계산 (작게 이동)
-    next_x = x + 5 * math.cos(math.radians(t.heading()))
-    next_y = y + 5 * math.sin(math.radians(t.heading()))
+    # 다음 위치 예측
+    next_x = x + 10 * math.cos(math.radians(t.heading()))
+    next_y = y + 10 * math.sin(math.radians(t.heading()))
 
     if is_collision(next_x, next_y):
-        # 충분히 여유 있게 장애물 우회
+        # 장애물 근처이면 오른쪽으로 우회
         t.left(90)
-        t.forward(80)
+        t.forward(70)
         t.right(90)
         t.setheading(t.towards(goal_x, goal_y))
     else:
-        t.forward(5)
+        t.forward(10)
 
-# 목적지점 표시
+# 목적지점 만들기
 t.penup()
 t.goto(goal_x, goal_y)
-t.dot(20, "green")
+t.dot(20, "blue")
 
 # 거리 출력
 total_distance = calculate_distance(start_x, start_y, goal_x, goal_y)
 print(f"총 거리: {total_distance:.2f}")
 
-# 도착 표시
+# 팝업 메시지
 root = tk.Tk()
 root.withdraw()
-messagebox.showinfo("도착!", "도착!")
+messagebox.showinfo("도착!", "도착했습니다!")
+

@@ -8,9 +8,8 @@ def calculate_distance(x1, y1, x2, y2):
     return math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
 
 # 장애물 충돌 감지 - 범위 설정
-def avoid_obstacle(x, y):
-    padding = 30  # 여유 범위
-    # 장애물 범위는 (-50, 0) ~ (10, 60)
+def is_collision(x, y):
+    padding = 15  # 여유 범위
     return (-50 - padding) <= x <= (10 + padding) and (0 - padding) <= y <= (60 + padding)
 
 # 출발, 도착 좌표

@@ -1,5 +1,6 @@
 import turtle
 import math
+import tkinter.messagebox # 목적지 도착 시 확실한 도착 알림을 위
 
 def calculate_distance(x1, y1, x2, y2):
     """
@@ -65,5 +66,5 @@ t.goto(300, 300)
 
 print(f"두 점 ({x1}, {y1}) 와 ({x2}, {y2}) 사이의 거리는 {distance:.2f} 입니다.")
 
-# 목적지에 도착 하고 print가 되기 때문에
-print("도착!")
+tkinter.messagebox.showinfo("도착!")
+
